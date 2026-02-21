@@ -1,3 +1,10 @@
+import asyncio
+import sys
+
+# Fix for Windows asyncio subprocess issue
+if sys.platform.startswith("win"):
+    asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
+    
 from playwright.sync_api import sync_playwright, expect
 import re
 from typing import List, Dict, Any

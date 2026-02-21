@@ -1,273 +1,339 @@
-# 🤖 AI-Driven Autonomous Web Testing Agent
+# 🤖 AI Autonomous Web Testing Platform
 
-An intelligent AI-powered automation framework that performs end-to-end (E2E) testing on web applications using **Playwright + Google Gemini LLM + LangGraph**.
+### Enterprise-Grade Natural Language Driven Test Automation System
 
-This system allows users to provide test instructions in natural language, which are then converted into structured automation steps, dynamically generated assertions, and executed in a real browser environment.
+An intelligent AI-powered web automation framework that converts natural language instructions into structured executable test workflows using Large Language Models (LLMs) and Playwright.
 
-## 🚀 Key Features
-
-* 🧠 Natural Language Test Case Parsing using LLM
-* 🔍 Automatic Playwright Assertion Generation
-* 🌐 Headless/Headed Browser Execution
-* 📊 Structured Test Execution Reports
-* 🤖 AI-based Debugging Suggestions on Failure
-* 🔄 Modular & Extensible Architecture
+This platform demonstrates a scalable, modular, and extensible architecture suitable for real-world enterprise QA automation environments.
 
 ---
 
-# 🏗️ System Architecture
+## 🚀 Executive Summary
+
+The AI Autonomous Web Testing Platform enables users to:
+
+* Provide a website URL
+* Describe test scenarios in natural language
+* Automatically generate structured automation steps using LLMs
+* Execute browser tests via Playwright
+* Perform dynamic assertions
+* Generate detailed PDF reports
+* Maintain execution history
+* Operate through a secure UI interface
+
+This system bridges the gap between manual QA and intelligent autonomous test generation.
+
+---
+
+# 🏗 High-Level Architecture
 
 ```
-User Input (Natural Language)
-        ↓
-LLM Test Case Parser
-        ↓
-Assertion Generator (LLM)
-        ↓
-Playwright Executor
-        ↓
-Execution Report + AI Debug Suggestions
+User (Streamlit UI)
+        │
+        ▼
+Authentication Layer
+        │
+        ▼
+Natural Language Input
+        │
+        ▼
+LLM Parsing Engine (Gemini API)
+        │
+        ▼
+Structured Test Steps (JSON)
+        │
+        ▼
+Execution Engine (Playwright)
+        │
+        ├── Browser Automation
+        ├── Assertion Engine
+        ├── Error Handling
+        └── Optional AI Debugging
+        │
+        ▼
+Reporting Layer (PDF Generator)
+        │
+        ▼
+Persistence Layer (SQLite History DB)
 ```
 
 ---
 
-# 🛠️ Tech Stack
-
-* Python 3.10+
-* Playwright (Browser Automation)
-* Google Gemini (LLM)
-* LangChain
-* LangGraph
-* python-dotenv
-* Regular Expressions (re module)
+# 🧠 Core System Components
 
 ---
 
-# 📂 Project Structure
+## 1️⃣ User Interface Layer (`ui_app.py`)
 
-```
-AI-agent-to-automate-website-testing/
-│
-├── playwright_executor.py
-├── test_case_parser.py
-├── llm_assertion_generator.py
-├── LangGraphImplementation.py
-├── LangGraphToWritePlaywrightScript.py
-├── README.md
-└── .env
-```
+**Technology:** Streamlit
 
----
+Responsibilities:
 
-# 📄 File Explanations
+* Accept website URL input
+* Accept natural language test cases
+* Toggle headless execution mode
+* Trigger test execution
+* Display real-time execution logs
+* Provide PDF report download
+* Display historical execution records
+* Manage authentication
 
----
-
-## 1️⃣ playwright_executor.py
-
-🔹 Core execution engine of the framework.
-🔹 Launches Chromium browser (headless or headed).
-🔹 Executes test steps sequentially.
-🔹 Evaluates AI-generated Playwright assertions dynamically.
-🔹 Generates structured execution summary.
-🔹 Provides AI debugging suggestions if test fails.
-
-### Responsibilities:
-
-* Browser lifecycle management
-* Action handling (open, click, fill, select, hover, wait)
-* Assertion evaluation
-* Error handling
-* AI failure analysis
+This layer acts as the user-facing orchestration layer.
 
 ---
 
-## 2️⃣ test_case_parser.py
+## 2️⃣ Natural Language Parsing Engine (`test_case_parser.py`)
 
-🔹 Converts natural language instructions into structured JSON commands.
-🔹 Uses Google Gemini LLM for semantic parsing.
+**Technology:** Google Gemini API (LLM)
 
-Example:
+Responsibilities:
 
-Input:
+* Convert free-form test instructions into structured JSON
+* Enforce strict output schema
+* Clean and validate LLM output
+* Handle parsing errors
+* Support retry logic for API failures
 
-```
-Open login page.
-Enter username as Admin.
-Click login.
-```
-
-Output:
+### Example Structured Output
 
 ```json
 [
-  {"action": "open", "params": {...}},
-  {"action": "fill", "params": {...}},
-  {"action": "click", "params": {...}}
+  {
+    "action": "fill",
+    "params": {
+      "selector": "input[name='username']",
+      "value": "Admin"
+    }
+  }
 ]
 ```
 
----
-
-## 3️⃣ llm_assertion_generator.py
-
-🔹 Generates Playwright assertion statements from expected outcomes.
-🔹 Ensures:
-
-* Valid Playwright syntax
-* Only executable `expect()` statements
-* No extra comments or markdown
-
-This reduces manual assertion writing effort.
+This abstraction decouples human language from execution logic.
 
 ---
 
-## 4️⃣ LangGraphImplementation.py
+## 3️⃣ Automation Execution Engine (`playwright_executor.py`)
 
-🔹 Demonstrates basic conversational AI agent using LangGraph.
-🔹 Shows state-based LLM workflow design.
-🔹 Serves as foundation for agent architecture.
+**Technology:** Playwright (Chromium)
+
+Capabilities:
+
+* Headed / headless browser execution
+* Structured action handling:
+
+  * open
+  * click
+  * fill
+  * select
+  * hover
+  * scroll
+  * wait
+  * clear
+* Assertion execution using dynamic evaluation
+* Timeout handling
+* Failure detection
+* Optional AI-powered debugging suggestions
+
+This module represents the core automation engine.
 
 ---
 
-## 5️⃣ LangGraphToWritePlaywrightScript.py
+## 4️⃣ Reporting Engine (`report_generator.py`)
 
-🔹 Uses LLM to generate complete Playwright JavaScript test scripts.
-🔹 Extracts generated code blocks automatically.
-🔹 Saves script as `.spec.js` file.
+**Technology:** FPDF
+
+Generates enterprise-style PDF reports including:
+
+* Test metadata
+* Timestamp
+* Execution summary
+* Pass/fail statistics
+* Failure diagnostics
+* AI debug suggestions
+
+Reports are downloadable directly via the UI.
 
 ---
 
-# ⚙️ Installation Guide
+## 5️⃣ Persistence Layer (`database.py`)
+
+**Technology:** SQLite
+
+Stores:
+
+* Website tested
+* Execution timestamp
+* Status (PASS / FAIL)
+* Step counts
+* Execution time
+
+Supports auditability and historical analysis.
+
+---
+
+## 6️⃣ Security Layer
+
+Implements:
+
+* Basic authentication system
+* Password hashing using bcrypt
+* Secure environment variable management via `.env`
+
+---
+
+# 🛠 Technology Stack
+
+| Layer                  | Technology        |
+| ---------------------- | ----------------- |
+| Frontend               | Streamlit         |
+| Backend Logic          | Python            |
+| AI Engine              | Google Gemini API |
+| Automation             | Playwright        |
+| Database               | SQLite            |
+| Reporting              | FPDF              |
+| Authentication         | bcrypt            |
+| Version Control        | Git               |
+| Environment Management | Python venv       |
+
+---
+
+# ⚙️ Installation & Setup
 
 ## 1️⃣ Clone Repository
 
 ```bash
-git clone https://github.com/your-username/AI-agent-to-automate-website-testing.git
-cd AI-agent-to-automate-website-testing
+git clone <repository-url>
+cd ai-agent-automation-websites-testing
 ```
 
 ---
 
-## 2️⃣ Install Dependencies
+## 2️⃣ Create Virtual Environment (Python 3.11 Recommended)
 
 ```bash
-pip install playwright
-pip install langchain
-pip install langchain-google-genai
-pip install langgraph
-pip install python-dotenv
+py -3.11 -m venv venv
+venv\Scripts\activate
 ```
 
-Install browser binaries:
+---
+
+## 3️⃣ Install Dependencies
 
 ```bash
+pip install streamlit playwright fpdf bcrypt pandas plotly langchain langchain-google-genai python-dotenv
 playwright install
 ```
 
 ---
 
-## 3️⃣ Configure API Key
+## 4️⃣ Configure Environment Variables
 
-Create a `.env` file in root folder:
+Create `.env` file:
 
 ```
-GOOGLE_API_KEY=your_gemini_api_key_here
+GOOGLE_API_KEY=your_gemini_api_key
 ```
-
-Get your API key from:
-[https://aistudio.google.com](https://aistudio.google.com)
 
 ---
 
-# ▶️ How To Execute
-
-## Run Main Automation Flow
+## 5️⃣ Launch Application
 
 ```bash
-python playwright_executor.py
-```
-
-This will:
-
-* Launch browser
-* Perform automated test steps
-* Run assertions
-* Print execution summary
-* Provide AI debugging (if failure occurs)
-
----
-
-## Run Test Case Parser
-
-```bash
-python test_case_parser.py
+streamlit run ui_app.py
 ```
 
 ---
 
-## Run Assertion Generator
+# 🧪 Example Enterprise Test Scenario
 
-```bash
-python llm_assertion_generator.py
+### Target Website:
+
+```
+https://opensource-demo.orangehrmlive.com
+```
+
+### Natural Language Input:
+
+```
+Enter username as Admin.
+Enter password as admin123.
+Click login button.
+Click on the Admin menu.
+Verify the page contains System Users.
+Logout from the application.
+Verify login page is visible.
 ```
 
 ---
 
-## Run LangGraph Agent
+# 📊 Key Features
 
-```bash
-python LangGraphImplementation.py
-```
-
----
-
-# 📊 Sample Execution Output
-
-```
-🧪 TEST EXECUTION : OrangeHRM — HR Workflow Automation
-📊 Total Steps    : 7
-✅ Status         : PASS
-📈 Pass Rate      : 100%
-⏱️ Execution Time : 00:00:15
-```
+* Natural language driven automation
+* Modular architecture
+* AI-based test generation
+* Dynamic assertion evaluation
+* AI-powered debugging suggestions
+* Headless execution support
+* Execution history tracking
+* Enterprise-style reporting
+* Secure credential handling
+* Extensible design for future agent-based upgrades
 
 ---
 
-# 🧠 Key Concepts Demonstrated
+# 📈 Scalability & Extensibility
 
-* Agent-based architecture
-* LLM prompt engineering
-* AI-assisted test automation
-* Dynamic code evaluation
-* Headless browser automation
-* Self-healing testing concept
-* Intelligent failure analysis
+This platform is designed to be extensible with:
 
----
-
-# 🔒 Security Note
-
-API keys are managed using `.env` file and are not committed to version control.
+* DOM-aware LLM prompting
+* Self-healing selector engine
+* Retry-based agent loops
+* Model fallback mechanisms
+* Caching layer for LLM responses
+* CI/CD integration
+* Cloud deployment
+* Role-based access control
+* Multi-user dashboard
 
 ---
 
-# 🎯 Future Improvements
+# 🔍 Known Limitations
 
-* Parallel test execution
-* CI/CD pipeline integration
-* Screenshot/video capture on failure
-* Self-healing locator mechanism
-* Multi-browser support
+* Free-tier LLM API rate limits
+* Complex dynamic SPAs may require enhanced selector strategies
+* Current architecture does not yet include full DOM context reasoning
+
+---
+
+# 🏢 Enterprise Value Proposition
+
+This system demonstrates how AI can:
+
+* Reduce manual QA scripting effort
+* Accelerate test case generation
+* Improve automation flexibility
+* Enable non-technical users to generate test scenarios
+* Serve as foundation for AI-driven QA platforms
+
+---
+
+# 🧩 Future Enterprise Enhancements
+
+* Advanced AI agent loop architecture
+* DOM extraction and contextual prompting
+* Intelligent selector healing
+* Model usage monitoring
+* Cost-aware LLM orchestration
+* Distributed execution support
+* Cloud-native deployment
 
 ---
 
 # 👨‍💻 Author
 
-Final Year Project
-AI-Powered Autonomous Web Testing Framework
+Developed as an internship final project demonstrating AI-integrated automation architecture with production-oriented design principles.
 
-
+---
 
 
 
